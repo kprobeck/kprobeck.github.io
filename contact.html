@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kenneth Probeck - Contact Me</title>
+
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+
+  <!-- Icon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="images/site_emblem.png">
+
+</head>
+<body>
+
+  <!-- Primary Page Layout
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  
+  <!-- Navigation Bar -->
+  	<div id="navcontainer">
+				<ul id="navlist">
+				<li><a href="docs/Probeck_Kenneth_Resume.pdf" target="_blank">My Resume</a></li>
+				<li><a href="https://www.linkedin.com/in/kenneth-probeck-039068a4" id="linkedInButton" target="_blank">LinkedIn</a></li>
+				<li><a href="index.html">Home</a></li>
+				<li id="dropdown"><a href="#">Projects</a>
+					<ul id="submenu">
+						<li><a href="project1.html">Adapterra</a></li>
+						<li><a href="project2.html">Rocket Jump!</a></li>
+						<li><a href="project3.html">Unity Park Ride</a><li>
+					</ul>
+				</li>
+				<li><a href="#" id="current">Contact Me</a></li>
+				</ul>
+	</div>
+  
+ <!-- Header -->
+<div class="section hero, recolorContact">
+	<div class="centerAlign">
+			<h1 class="section_heading">Contact Me</h1>
+	</div>
+	
+	<div class="row">
+	<div class="12 columns">
+		    <!-- STEP 1: Put the full URL to formmail.php on your website in the 'action' value. -->
+<form method="post" action="contact/formmail.php" name="SampleForm">
+    <input type="hidden" name="env_report" value="REMOTE_HOST,REMOTE_ADDR,HTTP_USER_AGENT,AUTH_TYPE,REMOTE_USER" />
+
+    <!-- STEP 2: Put your email address in the 'recipients' value.
+                 Note that you also have to allow this email address in the
+                 $TARGET_EMAIL setting within formmail.php!
+    -->
+    <input type="hidden" name="recipients" value="kxp4109@rit.edu" />
+
+    <!-- STEP 3: Specify required fields in the 'required' value - or leave unchanged.
+            NOTE: DO NOT put your email address and name here.
+            "Your email address" and "Your name" are error messages for your users to see,
+            not placeholders for you to replace.
+    -->
+    <input type="hidden" name="required" value="EmailAddr:Your email address,FullName:Your name" />
+
+    <!-- STEP 4: Put your subject line in the 'subject' value. -->
+    <input type="hidden" name="subject" value="Contace Me from Website" />
+
+    <!-- ALL DONE! Visit our site for HOW TO guides and more complex features. -->
+
+    <!-- this derives (creates) "email" and "realname" special fields from the input fields -->
+    <input type="hidden" name="derive_fields" value="email=EmailAddr,realname=FullName" />
+
+    <!-- this excludes the "email" and "realname" special fields from the body of the email you receive -->
+    <input type="hidden" name="mail_options" value="Exclude=email;realname" />
+
+    <table id="contactTable">
+    <tr>
+        <td>
+        <p>Please enter your full name:</p>
+        </td>
+        <td><input type="text" name="FullName" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+        <p>Please enter your email address:</p>
+        </td>
+        <td><input type="text" name="EmailAddr" />
+        </td>
+    </tr>
+    <tr>
+        <td><p>May I contact you?</p>
+        </td>
+        <td>
+            Yes <input type="radio" name="contact" value="Y" checked="checked" />
+            No <input type="radio" name="contact" value="N" />
+         </td>
+    </tr>
+    <tr>
+        <td valign="top">
+        <p>Please enter your message:</p>
+        </td>
+        <td><textarea style="color:black" name="mesg" rows="10" cols="50"></textarea>
+        </td>
+    </tr>
+    <tr>
+        <td><input id="contactTableSubmitButton" type="submit" value="Submit" /></td>
+        <td style="text-align:right;"><span style="font-size:60%;">Powered by Tectite <a href="http://www.tectite.com/" target="_blank">web form</a> processor (FormMail).</span>
+        </td>
+    </tr>
+    </table>
+</form>
+
+			<h5 class="centerAlign">To see my LinkedIn profile, please click the link above or 
+			<a href="https://www.linkedin.com/in/kenneth-probeck-039068a4" target="_blank">here.</a></h5>
+	</div>
+</div>
+
+</div>
+
+<!-- Copyright -->
+<div id="footer"><!--#include file="ssi/footer.shtml"--></div>
+
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+</body>
+</html>
