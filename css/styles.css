@@ -23,6 +23,12 @@ a:visited {
 	color:white;
 }
 
+/* Footer */
+footer{
+	bottom:0px;
+	position:fixed;
+}
+
 
 /* Navigation */
 #navcontainer {
