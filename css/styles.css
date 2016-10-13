@@ -33,6 +33,7 @@ footer{
 	background-color: #000000;
 	border-radius: 5px 15px 10px 0px;
 	border: 3px;
+	padding: 3px;
 	bottom:0px;
 	position:fixed;
 }
