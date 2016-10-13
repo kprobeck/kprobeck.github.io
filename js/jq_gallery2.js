@@ -1,8 +1,8 @@
 "use strict";
 
 var index = 0;
-var captions = ["Adapterra Logo","Adapterra Image 1","Adapterra Image 2","Adapterra Image 3"];
-var images = ["images/adapterraLogo.png","images/adapterra1.jpg","images/adapterra2.jpg","images/adapterra3.jpg"];  
+var captions = ["Adapterra Logo","Adapterra Image 1","Adapterra Image 2", "Area Tile Example", "Research Cards"];
+var images = ["images/adapterraLogo.png","images/adapterra1.jpg","images/adapterra2.jpg", "images/area_tile_overheat_texture.png", "images/research_cards.png"];  
 
 var adapterra1 = '<img src="images/adapterraLogo.png" alt="Adapterra Logo">';
 
