@@ -29,6 +29,7 @@ footer{
 	position:fixed;
 	background-color: #000000;
 	border-radius: 5px, 15px, 10px, 0px;
+	padding: 20px;
 	margin-top: 1px;
 	margin-right: 2px;
 }
