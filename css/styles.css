@@ -27,6 +27,7 @@ a:visited {
 footer{
 	bottom:0px;
 	position:fixed;
+	background-color: #000000;
 }
 
 #footer{
