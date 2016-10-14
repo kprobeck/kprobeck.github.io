@@ -407,17 +407,17 @@ border-color: #227;}
   }
   .hero {
     padding: 22rem 0;
-	height: 330px;
+	height: auto;
 	background-color:#290f7f;
 	color:#ffffff;
   }
   .projects {
     padding: 8rem 0;
-	height: 330px;
+	height: auto;
   }
   .projects2 {
     padding: 8rem 0;
-	height: 330px;
+	height: auto;
   }
   .hero-heading {
     font-size: 3.0rem;
