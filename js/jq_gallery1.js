@@ -2,9 +2,9 @@
 
 var index = 0;
 var captions = ["Adapterra","Rocket Jump","Unity Park Ride"];
-var images = ["images/adapterraLogo.png","images/rocketjump3_frontPage.png","images/alienShip1_frontPage.png"];  
+var images = ["images/ADAPTERRA.png","images/rocketjump3_frontPage.png","images/alienShip1_frontPage.png"];  
 
-var image1 = '<img src="images/adapterraLogo.png" alt="Adapterra">';
+var image1 = '<img src="images/ADAPTERRA.png" alt="Adapterra">';
 
 // setup jQuery's ready function
         $(document).ready(function(){

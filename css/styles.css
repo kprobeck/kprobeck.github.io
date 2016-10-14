@@ -221,11 +221,6 @@ border-color: #227;}
 	float: right;
 }
 
-/* Notes Hero Div */
-#notesHero {
-	height: 350px;
-}
-
 /* Picture Flip Div*/
 #controls{
    			width:auto;
@@ -407,7 +402,7 @@ border-color: #227;}
   }
   .hero {
     padding: 22rem 0;
-	height: 330px;
+	height: 280px;
 	background-color:#290f7f;
 	color:#ffffff;
   }
