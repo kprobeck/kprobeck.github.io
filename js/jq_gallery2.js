@@ -23,6 +23,7 @@ var adapterra1 = '<img src="images/adapterraLogo.png" alt="Adapterra Logo">';
 				if(index >= images.length){ index = 0;}
 				
 				showImage();
+				e.preventDefault();
 			});
 			
 			$("#previous").on("click",function(e)
@@ -32,6 +33,7 @@ var adapterra1 = '<img src="images/adapterraLogo.png" alt="Adapterra Logo">';
 				if(index < 0){ index = images.length - 1;}
 				
 				showImage();
+				e.preventDefault();
 			});
 		
 		});
