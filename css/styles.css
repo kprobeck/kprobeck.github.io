@@ -372,6 +372,11 @@ border-color: #227;}
     font-size: 3.0rem;
   }
   
+  /* Flippy Divs */
+  .flipbox {
+	 opacity: 0 !important;
+  }
+  
   /* Divs */
 
 .picBox {
