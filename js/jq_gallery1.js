@@ -1,10 +1,10 @@
 "use strict";
 
 var index = 0;
-var captions = ["Adapterra","Rocket Jump","Unity Park Ride"];
-var images = ["images/ADAPTERRA.png","images/rocketjump3_frontPage.png","images/alienShip1_frontPage.png"];  
+var captions = ["inDICEsion","Adapterra","Rocket Jump"];
+var images = ["images/boxart_indicecision.jpg", "images/ADAPTERRA.png","images/rocketjump3_frontPage.png"];  
 
-var image1 = '<img src="images/ADAPTERRA.png" alt="Adapterra">';
+var image1 = '<img src="images/boxart_indicecision.jpg" alt="inDICEsion">';
 
 // setup jQuery's ready function
         $(document).ready(function(){
