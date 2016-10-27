@@ -26,6 +26,13 @@ var image1 = '<img src="images/boxart_indicecision.jpg" alt="inDICEsion">';
 				e.preventDefault();
 			});
 			
+			$("#description").on("click"),function(e)
+			{
+				if(index == 0){window.location.href = 'https://kprobeck.github.io/project3.html';}
+				if(index == 1){window.location.href = 'https://kprobeck.github.io/project1.html';}
+				if(index == 2){window.location.href = 'https://kprobeck.github.io/project2.html';}
+			}
+			
 			$("#previous").on("click",function(e)
 			{
 				index--;
@@ -35,6 +42,16 @@ var image1 = '<img src="images/boxart_indicecision.jpg" alt="inDICEsion">';
 				showImage();
 				e.preventDefault();
 			});
+			
+			$("#flipbox1").on("click"),function(e)
+			{
+				index++;
+				
+				if(index >= images.length){ index = 0;}
+				
+				showImage();
+				e.preventDefault();
+			}
 		
 		});
 		
