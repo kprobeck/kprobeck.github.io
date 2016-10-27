@@ -36,6 +36,11 @@ var image1 = '<img src="images/boxart_indicecision.jpg" alt="inDICEsion">';
 				e.preventDefault();
 			});
 			
+			$("description").mouseover(function(e)
+			{
+				document.body.style.cursor = "pointer";
+			}
+			
 			$("#description").on("click",function(e)
 			{
 				if(index == 0){window.location.href = 'https://kprobeck.github.io/project3.html';}
