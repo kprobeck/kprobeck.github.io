@@ -36,10 +36,21 @@ var image1 = '<img src="images/boxart_indicecision.jpg" alt="inDICEsion">';
 				e.preventDefault();
 			});
 			
-			$("description").mouseover(function(e)
+			$("#description").hover(function(e)
 			{
-				document.body.style.cursor = "pointer";
-			}
+				$(this).css('cursor', 'pointer');
+			}, function() 
+			{
+				$(this).css('cursor', 'auto');
+			});
+			
+			$("#flipbox1").hover(function(e)
+			{
+				$(this).css('cursor', 'pointer');
+			}, function() 
+			{
+				$(this).css('cursor', 'auto');
+			});
 			
 			$("#description").on("click",function(e)
 			{
