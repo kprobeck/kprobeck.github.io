@@ -1,10 +1,10 @@
 "use strict";
 
 var index = 0;
-var captions = ["inDICEsion","Adapterra","Rocket Jump"];
-var images = ["images/boxart_indicecision.jpg", "images/ADAPTERRA.png","images/rocketjump3_frontPage.png"];  
+var captions = ["Color Coded", "inDICEsion","Adapterra","Rocket Jump"];
+var images = ["images/colorcoded.png", "images/boxart_indicecision.jpg", "images/ADAPTERRA.png","images/rocketjump3_frontPage.png"];  
 
-var image1 = '<img src="images/boxart_indicecision.jpg" alt="inDICEsion">';
+var image1 = '<img src="images/colorcoded.png" alt="Color Coded">';
 
 // setup jQuery's ready function
         $(document).ready(function(){
@@ -54,9 +54,10 @@ var image1 = '<img src="images/boxart_indicecision.jpg" alt="inDICEsion">';
 			
 			$("#description").on("click",function(e)
 			{
-				if(index == 0){window.location.href = 'https://kprobeck.github.io/project3.html';}
-				if(index == 1){window.location.href = 'https://kprobeck.github.io/project1.html';}
-				if(index == 2){window.location.href = 'https://kprobeck.github.io/project2.html';}
+				if(index == 0){window.location.href = 'https://kprobeck.github.io/project4.html';}
+				if(index == 1){window.location.href = 'https://kprobeck.github.io/project3.html';}
+				if(index == 2){window.location.href = 'https://kprobeck.github.io/project1.html';}
+				if(index == 3){window.location.href = 'https://kprobeck.github.io/project2.html';}
 			});
 			
 			$("#flipbox1").on("click",function(e)
