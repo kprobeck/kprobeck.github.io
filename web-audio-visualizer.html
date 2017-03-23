@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Kenneth Probeck - Web Audio Visualizer</title>
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+	<style>
+      canvas {
+        margin-left:10px;
+        margin-top:10px;
+        box-shadow: 2px 2px 8px 2px rgba(255,255,255,0.5);
+        background: black;
+    }
+      
+      h2, h4 {
+        text-align: center;
+      }
+      
+      #controls{
+      	margin-left:10px;
+        margin-top:10px;
+      }
+	</style>
+  
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="images/site_emblem.png">
+  
+	<script>
+	// An IIFE ("Iffy") - see the notes in mycourses
+	(function(){
+		"use strict";
+		
+		var NUM_SAMPLES = 256;
+        var SOUND_1 = 'media/Ghosts N Stuff.mp3';
+        var SOUND_2 = 'media/Strobe (Club Edit).mp3';
+        var SOUND_3 = 'media/Some Chords.mp3';
+        var SOUND_4 = 'media/4ware.mp3';
+        var SOUND_5 = 'media/Dieback.mp3';
+		var audioElement;
+		var analyserNode;
+        var audioData = new Uint8Array(NUM_SAMPLES/2); 
+		var canvas, ctx;
+      
+      
+        // artStyle, used for switched what art is drawn to canvas
+        var artStyle = '4x4=12';
+      
+        // booleans for checkboxes
+        var invert = false;
+        var danceParty = false;
+        var grad = false;
+        var waveForm = false;
+      
+        // variables for effecting rectangles
+        var barWidth = 0;
+		var barSpacing = 0;
+		var barHeight = 0;
+		var topSpacing = 0;
+      
+        // variable for color Sliders
+        var colorSlideRed = 0;
+        var colorSlideGreen = 0;
+        var colorSlideBlue = 0;
+      
+        // variables for altering audio
+        var delayAmount = 0.0;
+        var delayNode;
+      
+        // variable for gradient
+        var gradient;
+		
+		function init(){
+			// set up canvas stuff
+			canvas = document.querySelector('canvas');
+			ctx = canvas.getContext("2d");
+            ctx.shadowColor = '#32ef32';
+          
+            // gradient value
+            gradient = ctx.createLinearGradient(0,0, canvas.width, 0);
+            gradient.addColorStop(0, 'red');
+            gradient.addColorStop(0.2, 'orange');
+            gradient.addColorStop(0.4, 'yellow');
+            gradient.addColorStop(0.6, 'green');
+            gradient.addColorStop(0.8, 'blue');
+            gradient.addColorStop(1, 'purple');
+			
+			// get reference to <audio> element on page
+			audioElement = document.querySelector('audio');
+			
+			// call our helper function and get an analyser node
+			analyserNode = createWebAudioContextWithAnalyserNode(audioElement);
+			
+			// get sound track <select> and Full Screen button working
+			setupUI();
+			
+			// load and play default sound into audio element
+			playStream(audioElement,SOUND_1);
+            // set default volume to half, and set it outside of playStream so it won't
+            // reset when switching songs
+            audioElement.volume = 0.5;
+			
+			// start animation loop
+			update();
+		}
+		
+		
+		function createWebAudioContextWithAnalyserNode(audioElement) {
+			var audioCtx, analyserNode, sourceNode;
+			// create new AudioContext
+			// The || is because WebAudio has not been standardized across browsers yet
+			// http://webaudio.github.io/web-audio-api/#the-audiocontext-interface
+			audioCtx = new (window.AudioContext || window.webkitAudioContext);
+			
+			// create an analyser node
+			analyserNode = audioCtx.createAnalyser();
+          
+            // create the delay node
+            delayNode = audioCtx.createDelay();
+            delayNode.delayTime.value = delayAmount;
+          
+			/*
+			We will request NUM_SAMPLES number of samples or "bins" spaced equally 
+			across the sound spectrum.
+			
+			If NUM_SAMPLES (fftSize) is 256, then the first bin is 0 Hz, the second is 172 Hz, 
+			the third is 344Hz. Each bin contains a number between 0-255 representing 
+			the amplitude of that frequency.
+			*/ 
+			
+			// fft stands for Fast Fourier Transform
+			analyserNode.fftSize = NUM_SAMPLES;
+			
+			// this is where we hook up the <audio> element to the analyserNode
+			sourceNode = audioCtx.createMediaElementSource(audioElement);
+            sourceNode.connect(audioCtx.destination);
+          
+            sourceNode.connect(delayNode);
+			delayNode.connect(analyserNode);
+          
+			
+			// here we connect to the destination i.e. speakers
+			analyserNode.connect(audioCtx.destination);
+			return analyserNode;
+		}
+      
+
+		
+		function setupUI(){
+          
+            // switch what song is playing
+			document.querySelector("#trackSelect").onchange = function(e){
+				playStream(audioElement,e.target.value);
+			};
+          
+            document.querySelector('#artSelect').onchange = function(e){
+                artStyle = e.target.value;
+              
+              // change reference image accordingly
+                if(artStyle == "while12") 
+                {
+                  document.querySelector('#referenceImage').src = "albumArt/while12.png"; 
+                }
+                else 
+                {
+                  document.querySelector('#referenceImage').src = "albumArt/4x4=12.jpg"; 
+                }
+            }
+          
+            // change color overlayed on canvas according to sliders
+            document.querySelector("#colorSliderRed").onchange = function(e){
+                colorSlideRed = e.target.value;
+			};
+          
+            document.querySelector("#colorSliderGreen").onchange = function(e){
+                colorSlideGreen = e.target.value;
+			};
+          
+            document.querySelector("#colorSliderBlue").onchange = function(e){
+                colorSlideBlue = e.target.value;
+			};
+          
+            // chnage delay / reverb according to slider
+            document.querySelector("#delaySlider").onchange = function(e){
+				delayAmount = e.target.value;
+			};
+          
+            // alter effects according to checkboxes
+            document.querySelector("#danceCheck").onchange = function(){
+              if(danceParty == false){danceParty = true;}
+              else {danceParty = false;}
+            }
+            
+            document.querySelector("#invertCheck").onchange = function(){
+              if(invert == false) {
+                invert = true;
+              }
+              else { 
+                invert = false;
+              }
+            }
+            
+            document.querySelector("#gradientCheck").onchange = function(){
+              if(grad == false){grad = true;}
+              else {grad = false;}
+            }
+            
+            document.querySelector("#waveFormCheck").onchange = function(){
+              if(waveForm == false){waveForm = true;}
+              else {waveForm = false;}
+            }
+		}
+		
+		function playStream(audioElement,path){
+			audioElement.src = path;
+			audioElement.play();
+			document.querySelector('#status').innerHTML = "Now playing: " + path;
+		}
+		
+		function update() { 
+			// this schedules a call to the update() method in 1/60 seconds
+			requestAnimationFrame(update);
+			
+			/*
+				Nyquist Theorem
+				http://whatis.techtarget.com/definition/Nyquist-Theorem
+				The array of data we get back is 1/2 the size of the sample rate 
+			*/
+			
+			// create a new array of 8-bit integers (0-255)
+			audioData = new Uint8Array(NUM_SAMPLES/2); 
+			
+			// populate the array with the frequency data
+			// notice these arrays can be passed "by reference" 
+			if(!waveForm){
+              analyserNode.getByteFrequencyData(audioData);
+            }
+		
+			// OR // waveform data
+			if(waveForm) {
+              analyserNode.getByteTimeDomainData(audioData);
+            }
+          
+            // update delay time
+            delayNode.delayTime.value = delayAmount;
+          
+          if(artStyle == '4x4=12') {
+            
+            // set shadow color
+            ctx.shadowColor = '#32ef32';
+            
+            // DRAW!
+            ctx.fillStyle = 'black';
+			ctx.fillRect(0,0, 800, 600);
+            
+            // set up bar variables
+			barWidth = 2;
+			barHeight = 75;
+            barSpacing = 1.5;
+			topSpacing = 100;
+			
+			// loop through the data and draw!
+          
+            // background bars
+            if(danceParty) {
+              ctx.fillStyle = getRandomColor();
+            }
+            else if(!grad) {
+              ctx.fillStyle = 'rgba(50,239,50, .3)';
+            }
+            
+            if(grad) {
+              ctx.fillStyle = gradient;
+            }
+            
+            ctx.lineWidth = 5;
+            
+            ctx.shadowBlur = 20;
+            for(var i=0; i< audioData.length; i++) {
+              
+            ctx.fillRect(i * (barWidth + barSpacing),topSpacing + 256-audioData[i],barWidth,barHeight); 
+              
+                // draw inverted bars
+              ctx.fillRect(640-i*(barWidth+barSpacing),topSpacing+256-audioData[i],barWidth,barHeight);
+          }
+            ctx.shadowBlur = 0;
+          
+            // head / eyes / mouth
+            
+            if(danceParty) {
+              ctx.strokeStyle = getRandomColor();
+              ctx.fillStyle = getRandomColor();
+            }
+            else {
+              ctx.strokeStyle = '#32ef32';
+              ctx.fillStyle = '#32ef32';
+            }
+            
+            
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(canvas.width/2, canvas.height/2+50, 100, 0, 2*Math.PI, false);
+            ctx.stroke();
+          
+            
+            // drawing individual eyes dot            
+            drawEyeSpots(260, 240);
+          
+            drawEyeSpots(250, 240);
+          
+            drawEyeSpots(270, 240);
+          
+            drawEyeSpots(245, 220);
+          
+            drawEyeSpots(255, 220);
+          
+            drawEyeSpots(265, 220);
+          
+            drawEyeSpots(275, 220);
+          
+            drawEyeSpots(285, 220);
+          
+            drawEyeSpots(252, 210);
+          
+            drawEyeSpots(262, 210);
+          
+            drawEyeSpots(272, 210);
+          
+            drawEyeSpots(282, 210);
+          
+            drawEyeSpots(270, 200);
+          
+            drawEyeSpots(260, 200);
+          
+            drawEyeSpots(280, 200);
+          
+            drawEyeSpots(248, 230);
+          
+            drawEyeSpots(258, 230);
+          
+            drawEyeSpots(268, 230);
+          
+            drawEyeSpots(278, 230);
+          
+            drawEyeSpots(270, 200);
+          
+            drawEyeSpots(260, 200);
+            
+            drawEyeSpotsRight(canvas.width-245, 220);
+          
+            drawEyeSpotsRight(canvas.width-255, 220);
+            
+            drawEyeSpotsRight(canvas.width-265, 220);
+            
+            drawEyeSpotsRight(canvas.width-275, 220);
+          
+            drawEyeSpotsRight(canvas.width-285, 220);
+          
+            drawEyeSpotsRight(canvas.width-252, 210);
+          
+            drawEyeSpotsRight(canvas.width-262, 210);
+            
+            drawEyeSpotsRight(canvas.width-272, 210);
+            
+            drawEyeSpotsRight(canvas.width-282, 210);
+          
+            drawEyeSpotsRight(canvas.width-260, 200);
+          
+            drawEyeSpotsRight(canvas.width-270, 200);
+          
+            drawEyeSpotsRight(canvas.width-280, 200);
+          
+            drawEyeSpotsRight(canvas.width-248, 230);
+          
+            drawEyeSpotsRight(canvas.width-258, 230);
+          
+            drawEyeSpotsRight(canvas.width-268, 230);
+            
+            drawEyeSpotsRight(canvas.width-278, 230);
+          
+            drawEyeSpotsRight(canvas.width-250, 240);
+          
+            drawEyeSpotsRight(canvas.width-260, 240);
+          
+            drawEyeSpotsRight(canvas.width-270, 240);
+          
+            
+            // mouth
+            ctx.beginPath();
+            ctx.arc(canvas.width/2, 260, 80, 0, Math.PI, false);
+            ctx.closePath();
+            ctx.fill();
+            
+          
+            // ears
+            ctx.lineWidth = 7;
+            ctx.beginPath();
+            ctx.moveTo(220, 250);
+            ctx.bezierCurveTo(-150, 250 , 100, -170, 275, 160);
+            ctx.stroke();
+          
+            ctx.beginPath();
+            ctx.moveTo(canvas.width - 220, 250);
+            ctx.bezierCurveTo(canvas.width+150, 250, canvas.width - 100, -170, canvas.width - 275, 160);
+            ctx.stroke();
+
+            for(var i = 0; i < audioData.length; i++) {
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(220, 250);
+            ctx.bezierCurveTo(-150 + audioData[i] * 1.7, 250, 100 - audioData[i], -170 + audioData[i], 275, 160);
+            ctx.stroke();
+          
+            ctx.beginPath();
+            ctx.moveTo(canvas.width - 220, 250);
+            ctx.bezierCurveTo(canvas.width+150 - audioData[i] * 1.7, 250, canvas.width - 100 + audioData[i], -170 + audioData[i], canvas.width - 275, 160);
+            ctx.stroke();
+            }
+          }
+          
+          // only draw if on other art choice
+          if(artStyle == 'while12') {
+            
+            // change shadow color
+            ctx.shadowColor = 'rgb(239,50,50)';
+            
+            
+            // change colors according to what checkboxes may be checked
+            if(danceParty) {
+              ctx.fillStyle = 'rgba(0, 0, 0, .4)';
+			 ctx.fillRect(0,0, 800, 600);
+            }
+            else {
+              ctx.fillStyle = 'rgba(255, 255, 255, .4)';
+			  ctx.fillRect(0,0, 800, 600);
+            }
+            
+            // set up bar variables
+            barWidth = 4;
+            barHeight = 75;
+            barSpacing = 1.5;
+			topSpacing = 56;
+            
+            
+            // head
+            if(danceParty) {
+              ctx.strokeStyle = getRandomColor();
+            }
+            else {
+              ctx.strokeStyle = 'black';
+            }
+            ctx.beginPath();
+            ctx.arc(canvas.width/2, canvas.height/2+50, 125, 0, 2*Math.PI, false);
+            ctx.stroke();
+            
+            // ears
+            ctx.lineWidth = 3;
+            if(danceParty) {
+              ctx.fillStyle = 'black';
+            }
+            else {
+              ctx.fillStyle = 'white';
+            }
+            ctx.beginPath();
+            ctx.moveTo(195, 250);
+            ctx.bezierCurveTo(-100, 250 , 100, -150, 275, 135);
+            ctx.fill();
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(canvas.width - 195, 250);
+            ctx.bezierCurveTo(canvas.width+100, 250, canvas.width - 100, -150, canvas.width - 275, 135);
+            ctx.fill();
+            ctx.stroke();
+            
+            // background bars
+            if(danceParty) {
+              ctx.fillStyle = getRandomColor();
+            }
+            else if (!grad){
+              ctx.fillStyle = 'rgba(239,50,50, .1)';
+            }
+            
+            if(grad) {
+              ctx.fillStyle = gradient;
+            }
+            
+            ctx.lineWidth = 5;
+            
+            ctx.shadowBlur = 20;
+            for(var i=0; i< audioData.length; i++) {
+              
+            ctx.fillRect(i * (barWidth + barSpacing),topSpacing + 256-audioData[i],barWidth,barHeight); 
+              
+                // draw inverted bars
+              ctx.fillRect(640-i*(barWidth+barSpacing),topSpacing+256-audioData[i],barWidth,barHeight);
+          }
+            ctx.shadowBlur = 0;
+            
+            ctx.lineWidth = 3;
+            
+            // eyes / mouth
+            ctx.beginPath();
+            ctx.ellipse(255, 200, 25, 35, 55 * Math.PI/280, 0, 2 * Math.PI);
+            ctx.stroke();
+          
+            ctx.beginPath();
+            ctx.ellipse(canvas.width-255, 200, 25, 35, -55 * Math.PI/280, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(canvas.width/2, 260, 100, 0, Math.PI, false);
+            ctx.closePath();
+            ctx.stroke();
+            
+            // lots of lines, ones NOT on the face will be affected by audio
+            ctx.beginPath();
+            ctx.moveTo(65, 75);
+            ctx.lineTo(130, 75);
+            ctx.lineTo(170, 36);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(canvas.width-65, 75);
+            ctx.lineTo(canvas.width-130, 75);
+            ctx.lineTo(canvas.width-170, 36);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(270, 222);
+            ctx.lineTo(canvas.width/2, 259);
+            ctx.lineTo(canvas.width-270, 222);
+            ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(0, 135);
+            
+            for(var i = 0; i < 155; i++) {
+              ctx.lineTo(i, 135 + audioData[i] / 4);
+            }
+            
+			ctx.lineTo(155, 135);
+			ctx.lineTo(220, 68);
+			ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(canvas.width, 135);
+            
+            for(var i = canvas.width; i > (canvas.width - 155); i--) {
+              ctx.lineTo(i, 135 + audioData[canvas.width - i] / 4);
+            }
+            
+			ctx.lineTo(canvas.width - 155, 135);
+			ctx.lineTo(canvas.width- 220, 68);
+			ctx.stroke();
+			
+            ctx.beginPath();
+			ctx.moveTo(0, 175);
+            
+            for(var i = 0; i < 50; i++) {
+              ctx.lineTo(i, 175 - audioData[i] / 4);
+            }
+            
+			ctx.lineTo(50, 175);
+			ctx.lineTo(65, 160);
+			ctx.lineTo(260, 160);
+			ctx.lineTo(275, 145);
+			ctx.lineTo(canvas.width - 275, 145);
+			ctx.lineTo(canvas.width - 260, 160);
+			ctx.lineTo(canvas.width - 65, 160);
+			ctx.lineTo(canvas.width - 50, 175);
+            
+            for(var i = canvas.width - 50; i < canvas.width; i++) {
+              ctx.lineTo(i, 175 - audioData[canvas.width - i] / 4);
+            }
+            
+			ctx.lineTo(canvas.width, 175);
+			ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(82, 56);
+            ctx.lineTo(180, 56);
+            ctx.lineTo(280, 173);
+            ctx.lineTo(canvas.width-280, 173);
+            ctx.lineTo(canvas.width-180, 56);
+            ctx.lineTo(canvas.width-82, 56);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(0, 100);
+            
+            for(var i = 0; i < 53; i++) {
+              ctx.lineTo(i, 100 - audioData[i] / 4);
+            }
+            
+            ctx.lineTo(53, 100);
+            ctx.lineTo(70, 110);
+            ctx.lineTo(240, 110);
+            ctx.lineTo(280, 163);     
+            ctx.lineTo(canvas.width - 280, 163);
+            ctx.lineTo(canvas.width - 240, 110);
+            ctx.lineTo(canvas.width - 70, 110);
+            ctx.lineTo(canvas.width - 53, 100);
+            
+            for(var i = canvas.width - 53; i < canvas.width; i++) {
+              ctx.lineTo(i, 100 - audioData[canvas.width - i] / 4);
+            }
+            
+            ctx.lineTo(canvas.width, 100);
+            ctx.stroke();
+			  
+			ctx.beginPath();
+            ctx.moveTo(0, 95);
+            
+            for(var i = 0; i < 55; i++) {
+              ctx.lineTo(i, 95 + audioData[i] / 4);
+            }
+            
+            ctx.lineTo(55, 95);
+            ctx.lineTo(70, 85);
+            ctx.lineTo(220, 85);
+            ctx.lineTo(280, 153);     
+            ctx.lineTo(canvas.width - 280, 153);
+            ctx.lineTo(canvas.width - 220, 85);
+            ctx.lineTo(canvas.width - 70, 85);
+            ctx.lineTo(canvas.width - 55, 95);
+            
+            for(var i = canvas.width - 55; i < canvas.width; i++) {
+              ctx.lineTo(i, 95 + audioData[canvas.width - i] / 4);
+            }
+            
+            ctx.lineTo(canvas.width, 95);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(0, 365);
+            
+            for(var i = 0; i < 270; i++) {
+              ctx.lineTo(i, 365 + audioData[i] / 4);
+            }
+            
+            ctx.lineTo(270, 365);
+            ctx.lineTo(275, 364);
+            ctx.lineTo(canvas.width - 275, 364);
+            ctx.lineTo(canvas.width - 270, 365);
+            
+            for(var i = canvas.width - 270; i < canvas.width; i++) {
+              ctx.lineTo(i, 365 + audioData[canvas.width - i] / 4);
+            }
+            
+            ctx.lineTo(canvas.width, 365);
+            ctx.stroke();
+			  
+			ctx.beginPath();
+            ctx.moveTo(0, 250);
+            
+            for(var i = 0; i < 270; i++) {
+              ctx.lineTo(i, 250 - audioData[i] / 4);
+            }
+            
+            ctx.lineTo(270, 250);
+            ctx.lineTo(295, 190);
+            ctx.lineTo(canvas.width - 295, 190);
+            ctx.lineTo(canvas.width - 270, 250);
+            
+            for(var i = canvas.width - 270; i < canvas.width; i++) {
+              ctx.lineTo(i, 250 - audioData[canvas.width - i] / 4);
+            }
+            
+            ctx.lineTo(canvas.width, 250);
+            ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(0, 185);
+            
+            for(var i = 0; i < 55; i++) {
+              ctx.lineTo(i, 185 - audioData[i] / 4);
+            }
+            
+			ctx.lineTo(55, 185);
+			ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(canvas.width, 185);
+            
+            for(var i = canvas.width; i > (canvas.width - 55); i--) {
+              ctx.lineTo(i, 185 + audioData[canvas.width - i] / 4);
+            }
+            
+			ctx.lineTo(canvas.width-55, 185);
+			ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(0, 195);
+            
+            for(var i = 0; i < 228; i++) {
+              ctx.lineTo(i, 195 + audioData[i] / 4);
+            }
+            
+			ctx.lineTo(228, 195);
+			ctx.lineTo(245, 165);
+			ctx.lineTo(canvas.width-245, 165);
+			ctx.lineTo(canvas.width-228, 195);
+            
+            for(var i = canvas.width - 228; i < canvas.width; i++) {
+              ctx.lineTo(i, 195 - audioData[canvas.width - i] / 4);
+            }
+            
+			ctx.lineTo(canvas.width, 195);
+			ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(72, 210);
+			ctx.lineTo(200, 210);
+			ctx.lineTo(240, 235);
+			ctx.lineTo(canvas.width-240, 235);
+			ctx.lineTo(canvas.width-200, 210);
+			ctx.lineTo(canvas.width-72, 210);
+			ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(45, 150);
+			ctx.lineTo(100, 150);
+			ctx.lineTo(195, 50);
+			ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(canvas.width-45, 150);
+			ctx.lineTo(canvas.width-100, 150);
+			ctx.lineTo(canvas.width-195, 50);
+			ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(0, 230);
+            
+            for(var i = 0; i < 100; i++) {
+              ctx.lineTo(i, 230 - audioData[i] / 4);
+            }
+            
+			ctx.lineTo(100, 230);
+			ctx.lineTo(150, 180);
+			ctx.lineTo(180, 180);
+			ctx.lineTo(240, 260);
+			ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(canvas.width, 230);
+            
+            for(var i = canvas.width; i > (canvas.width - 100); i--) {
+              ctx.lineTo(i, 230 + audioData[canvas.width - i] / 4);
+            }
+            
+			ctx.lineTo(canvas.width-100, 230);
+			ctx.lineTo(canvas.width-150, 180);
+			ctx.lineTo(canvas.width-180, 180);
+			ctx.lineTo(canvas.width-240, 260);
+			ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(0, 280);
+            
+            for(var i = 0; i < 200; i++) {
+              ctx.lineTo(i, 280 + audioData[i] / 4);
+            }
+            
+			ctx.lineTo(200, 280);
+			ctx.lineTo(228, 300);  
+			ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(canvas.width, 280);
+            
+            for(var i = canvas.width; i > (canvas.width - 200); i--) {
+              ctx.lineTo(i, 280 + audioData[canvas.width - i] / 4);
+            }
+            
+			ctx.lineTo(canvas.width-200, 280);
+			ctx.lineTo(canvas.width-228, 300);  
+			ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(0, 270);
+            
+            for(var i = 0; i < 195; i++) {
+              ctx.lineTo(i, 270 + audioData[i] / 4);
+            }
+            
+			ctx.lineTo(195, 270);
+			ctx.lineTo(228, 240);
+			ctx.lineTo(canvas.width-228, 240);
+			ctx.lineTo(canvas.width-195, 270);
+            
+            for(var i = canvas.width - 195; i < canvas.width; i++) {
+              ctx.lineTo(i, 270 - audioData[canvas.width - i] / 4);
+            }
+            
+			ctx.lineTo(canvas.width, 270);
+			ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(0, 330);
+            
+            for(var i = 0; i < 60; i++) {
+              ctx.lineTo(i, 330 + audioData[i] / 4);
+            }
+            
+			ctx.lineTo(60, 330);
+			ctx.lineTo(90, 300);
+			ctx.lineTo(205, 300);
+			ctx.lineTo(235, 330);
+			ctx.lineTo(248, 330);
+			ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(canvas.width, 330);
+            
+            for(var i = canvas.width; i > (canvas.width - 60); i--) {
+              ctx.lineTo(i, 330 - audioData[canvas.width - i] / 4);
+            }
+            
+			ctx.lineTo(canvas.width-60, 330);
+			ctx.lineTo(canvas.width-90, 300);
+			ctx.lineTo(canvas.width-205, 300);
+			ctx.lineTo(canvas.width-235, 330);
+			ctx.lineTo(canvas.width-248, 330);
+			ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(0, 320);
+            
+            for(var i = 0; i < 215; i++) {
+              ctx.lineTo(i, 320 - audioData[i] / 4);
+            }
+            
+			ctx.lineTo(215, 320);
+			ctx.lineTo(222, 310);
+			ctx.lineTo(233, 310);
+			ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(canvas.width, 320);
+            
+            for(var i = canvas.width; i > (canvas.width - 215); i--) {
+              ctx.lineTo(i, 320 + audioData[canvas.width - i] / 4);
+            }
+            
+			ctx.lineTo(canvas.width-215, 320);
+			ctx.lineTo(canvas.width-222, 310);
+			ctx.lineTo(canvas.width-233, 310);
+			ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(0, 390);
+            
+            for(var i = 0; i < 200; i++) {
+              ctx.lineTo(i, 390 - audioData[i] / 4);
+            }
+            
+            ctx.lineTo(200, 390);
+            ctx.lineTo(250, 332);
+            ctx.stroke();
+            
+            ctx.beginPath();
+			ctx.moveTo(canvas.width, 390);
+            
+            for(var i = canvas.width; i > (canvas.width - 200); i--) {
+              ctx.lineTo(i, 390 - audioData[canvas.width - i] / 4);
+            }
+            
+            ctx.lineTo(canvas.width-200, 390);
+            ctx.lineTo(canvas.width-250, 332);
+            ctx.stroke();
+			  
+			ctx.beginPath();
+			ctx.moveTo(282, 200);
+			ctx.lineTo(canvas.width-282, 200);
+			ctx.stroke();
+            
+          }
+          
+          // check to see if pixels need to be manipulated
+          manipulatePixels();
+			 
+		} 
+      
+      // get randomColor function
+      function getRandomColor() {
+        var red = Math.round(Math.random()*200+55);
+	    var green = Math.round(Math.random()*200+55);
+	    var blue=Math.round(Math.random()*200+55);
+	    var color='rgb('+red+','+green+','+blue+')';
+	    return color;
+      }
+      
+      // functions to draw eye spots on 4x4
+      // white spots for "flickering" effect
+      
+      // left eye
+      function drawEyeSpots(x, y) {
+        // just in case eye spot is white
+        ctx.save();
+        
+        // see if this eye spot should be white
+        if(Math.random() < .05) {
+          ctx.fillStyle = 'white';
+        }
+        
+        ctx.beginPath();
+        ctx.ellipse(x, y, 2.5, 3.5, 45 * Math.PI/280, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // just in case eye sports were white
+        ctx.restore();
+      }
+      
+      // right eye
+      function drawEyeSpotsRight(x, y) {
+        // just in case eye spot is white
+        ctx.save();
+        
+        // see if this eye spot should be white
+        if(Math.random() < .05) {
+          ctx.fillStyle = 'white';
+        }
+        
+        ctx.beginPath();
+        ctx.ellipse(x, y, 2.5, 3.5, -45 * Math.PI/280, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // just in case eye sports were white
+        ctx.restore();
+      }
+      
+      // manipulatePixels function
+      function manipulatePixels() {
+        
+        // create a new array of 8-bit integers (0-255)
+			var audioData = new Uint8Array(NUM_SAMPLES/2); 
+			
+			// populate the array with the frequency data
+			// notice these arrays can be passed "by reference" 
+			analyserNode.getByteFrequencyData(audioData);
+        
+        
+        // get all the rgba pixel data of the canvas by grabbing the
+        // ImageData obj
+        // https://developer.mozilla.org/en-US/docs/Web/API/ImageData
+        var imageData = ctx.getImageData(0,0, canvas.width, canvas.height);
+        
+        // imageData.data is an 8-bit array - values range from 0-255,
+        // contains 4 values per pixel: 4 x canvas.width x
+        // canvas.height = 1024000 values!
+        
+        var data = imageData.data;
+        var length = data.length;
+        var width = imageData.width;
+        
+        // iterate through each pixel
+        // we step by 4 so that we can manipulate 1 pixel per iteration
+        // data[i] is red, data[i + 2] is green, etc.
+        
+        for(var i = 0; i < length; i+=4) {
+          
+          // change according to color sliders
+          if(colorSlideRed != 0) { 
+            data[i] = data[i] + colorSlideRed / 2;
+          }
+          
+          if(colorSlideGreen != 0) { 
+            data[i+1] = data[i+1] + colorSlideGreen / 2;
+          }
+          
+          if(colorSlideBlue != 0) { 
+            data[i+2] = data[i+2] + colorSlideBlue / 2;
+          }
+          
+          
+          // inverts the color of the pixels on the canvas
+          if(invert) {
+            var red = data[i], green = data[i+1], blue = data[i+2];
+            data[i] = 255 - red;
+            data[i+1] = 255 - green;
+            data[i+2] = 255 - blue;
+          }
+          
+        }
+        
+        // put it into the canvas
+        ctx.putImageData(imageData, 0, 0);
+      }
+		
+		 // FULL SCREEN MODE
+		function requestFullscreen(element) {
+			if (element.requestFullscreen) {
+			  element.requestFullscreen();
+			} else if (element.mozRequestFullscreen) {
+			  element.mozRequestFullscreen();
+			} else if (element.mozRequestFullScreen) { // camel-cased 'S' was changed to 's' in spec
+			  element.mozRequestFullScreen();
+			} else if (element.webkitRequestFullscreen) {
+			  element.webkitRequestFullscreen();
+			}
+			// .. and do nothing if the method is not supported
+		};
+		
+		
+		window.addEventListener("load",init);
+	}());
+		
+	</script>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <div id="navcontainer">
+				<ul  class="topnav" id="navlist">
+                <div clas="row" id="navBarRow">
+                    
+                  <div class="two columns">
+                    <p></p>
+                  </div>
+                  
+                <div class="two columns">
+                  <li id="homeButtonElement"><a href="index.html">Home</a></li>
+                </div>
+                  
+                <div class="two columns">
+                  <li><a href="index.html#projectsSection">Projects</a></li>
+				</div>
+                  
+                <div class="two columns">
+                  <li><a href="index.html#contactSection">Contact</a></li>
+                </div>
+                  
+                <div class="two columns">
+                  <li><a href="docs/Probeck_Kenneth_Resume.pdf" target="_blank">Resume</a></li>
+                </div>
+                  
+                  <div class="two columns">
+                    <p></p>
+                  </div>
+                  
+                </div>
+				</ul>
+	</div>
+  
+  <div id="homeSection" class="container" style="background-color: #8BD6DB; text-align: center; padding-top: 6%; padding-left: 3%; padding-right: 3%; padding-bottom: 2%; border: 2px; border-radius: 25px">
+        <h2>Deadmau5 (c) Audio Visualizer by Kenneth Probeck</h2>
+        <p>Please note: I do not own any of the artwork shown to the right of the canvas, it is merely to show the similarities
+        in my work and two Deadmau5 (c) album covers.</p>
+        <p>I also do not own the rights to any of these audio files.  Their rights are reserved by Deadmau5 (c) and Mau5trap (c).</p>
+    </div>
+  <div id="projectsSection" class="container" style="background-color: #202020; text-align: center; color: #B8B6A3; margin-top: 2%;">
+	<canvas id="canvas" width="640" height="400"></canvas>
+    <img id="referenceImage" src="albumArt/4x4=12.jpg" style="margin-left: 15px;">
+	<div id="controls">
+		<audio controls loop></audio>
+		<label>Track: 
+			<select id="trackSelect" style="color: #202020;">
+                <option value="media/Ghosts N Stuff.mp3">Ghosts N Stuff</option>
+                <option value="media/Strobe (Club Edit).mp3">Strobe (Club Edit)</option>
+                <option value="media/Some Chords.mp3">Some Chords</option>
+                <option value="media/4ware.mp3">4ware</option>
+                <option value="media/Dieback.mp3">Dieback</option>
+			</select>
+		</label>
+      
+        <label>Art: 
+			<select id="artSelect" style="color: #202020;">
+                <option value="4x4=12">4x4=12</option>
+                <option value="while12">While(1&lt;2)</option>
+			</select>
+		</label>
+        <br>
+        <input id = "danceCheck" type="checkbox" name="vehicle" value="danceParty">Dance Party
+        <input id = "invertCheck" type="checkbox" name="vehicle" value="invert">Invert
+        <input id = "gradientCheck" type="checkbox" name="vehicle" value="grad">Gradient
+        <input id = "waveFormCheck" type="checkbox" name="vehicle" value="waveForm">Waveform
+        <br>
+        <label for="colorSliderRed">Red Color</label>
+		<input id="colorSliderRed" type ="range" min ="0" max="255" step ="50" value ="0"/>
+        <br>
+      
+        <label for="colorSliderGreen">Green Color</label>
+		<input id="colorSliderGreen" type ="range" min ="0" max="255" step ="50" value ="0"/>
+        <br>
+      
+        <label for="colorSliderBlue">Blue Color</label>
+		<input id="colorSliderBlue" type ="range" min ="0" max="255" step ="50" value ="0"/>
+        <br>
+      
+        <br>
+        <label for="delaySlider">Delay/Reverb</label>
+		<input id="delaySlider" type ="range" min ="0.0" max="1.0" step ="0.1" value ="0.0"/>
+        <br>
+        <p id="status">???</p>
+        <br>
+        <br>
+        <br>
+        <br>
+        
+	</div>
+  </div>
+</body>
+</html>
