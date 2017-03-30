@@ -611,6 +611,10 @@ there.
     #navBarRow {
     margin-left: 10%;
   }
+	
+.projectImages{
+    margin-left: 1%;
+  }
 }
 
 @media (min-width: 550px) {
