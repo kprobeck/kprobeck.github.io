@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+    
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+	<style>
+      canvas {
+        margin-left:10px;
+        margin-top:10px;
+        box-shadow: 2px 2px 8px 2px rgba(255,255,255,0.5);
+        background: black;
+        
+    }
+      
+      h2, h4 {
+        text-align: center;
+      }
+      
+      #controls{
+      	margin-left:10px;
+        margin-top:10px;
+      }
+	</style>
+  
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="images/site_emblem.png">
+    
+	<style>
+		canvas {
+          border: 1px solid gray;
+          position: absolute;
+          top: 5px;
+          left: 5px;
+          z-index: 0;
+      }
+      
+      @font-face {
+        font-family: "8-BIT-WONDER";
+        src: url("media/fonts/PressStart2P-Regular.ttf") format("truetype");
+      }
+        #audioControls {display: none;}
+	</style>
+	<title>Kenneth Probeck - Penguin Glide</title>
+</head>
+<body>
+    
+    <!-- Navigation Bar -->
+  <div id="navcontainer">
+				<ul  class="topnav" id="navlist">
+                <div clas="row" id="navBarRow">
+                    
+                  <div class="two columns">
+                    <p></p>
+                  </div>
+                  
+                <div class="two columns">
+                  <li id="homeButtonElement"><a href="index.html">Home</a></li>
+                </div>
+                  
+                <div class="two columns">
+                  <li><a href="index.html#projectsSection">Projects</a></li>
+				</div>
+                  
+                <div class="two columns">
+                  <li><a href="index.html#contactSection">Contact</a></li>
+                </div>
+                  
+                <div class="two columns">
+                  <li><a href="docs/Probeck_Kenneth_Resume.pdf" target="_blank">Resume</a></li>
+                </div>
+                  
+                  <div class="two columns">
+                    <p></p>
+                  </div>
+                  
+                </div>
+				</ul>
+	</div>
+  
+  <div id="homeSection" class="container" style="background-color: #8BD6DB; text-align: center; padding-top: 6%; padding-left: 3%; padding-right: 3%; padding-bottom: 2%; border: 2px; border-radius: 25px">
+        <h2>Penguin Glide by Kenneth Probeck</h2>
+    </div>
+    <div class="container" style="margin: auto; width: 90%; background-color: #202020; text-align: center; color: #B8B6A3; margin-top: 2%;">
+	<canvas>
+      Unable to load canvas
+	</canvas>
+    <section id="audioControls">
+      <audio id="bgAudio" src="media/background.mp3" controls loop></audio>
+      <audio id="effectAudio" controls></audio>
+      <audio id="splashAudio" controls src="media/SPLASH.wav"></audio>
+      <audio id="deathAudio" controls src="media/sfx_sounds_negative1.wav"></audio>
+      <audio id="menuAudio" controls src="media/sfx_menu_move4.wav"></audio>
+      <audio id="selectAudio" controls src="media/sfx_menu_select1.wav"></audio>
+    </section>
+	<script src='js/utilities.js'></script>
+    <script src='js/keys.js'></script>
+    <script src='js/emitter.js'></script>
+    <script src='js/sound.js'></script>
+	<script src='js/loader.js'></script>
+	<script src='js/main.js'></script>
+    <img style ="display: none;" src="media/spriteSheets/WASDKeys.png">
+    <img style ="display: none;" src="media/spriteSheets/beCareful.png">
+    <img style ="display: none;" src="media/spriteSheets/arrowKeys.png">
+    <img style ="display: none;" src="media/spriteSheets/penguin-Sheet.png">
+    <img style ="display: none;" src="media/spriteSheets/heart-empty.png">
+    <img style ="display: none;" src="media/spriteSheets/heart-filled.png">
+    <img style ="display: none;" src="media/spriteSheets/fish-Sheet.png">
+    <img style ="display: none;" src="media/spriteSheets/iceHole-Sheet.png">
+    <img style ="display: none;" src="media/spriteSheets/Kenny-Sheet.png">
+    <img style ="display: none;" src="media/spriteSheets/happyPenguin.png">
+    <img style ="display: none;" src="media/spriteSheets/sadPenguin.png">
+    </div>
+</body>
+</html>
