@@ -68,10 +68,18 @@
 				document.getElementById("audioVizProject").style.display = 'none';
 			};
           
+            document.querySelector("#penguinButton").onclick = function(e){
+				document.getElementById("penguinProject").style.display = 'block';
+			};
+          
+            document.querySelector("#penguinClose").onclick = function(e){
+				document.getElementById("penguinProject").style.display = 'none';
+			};
+            
             document.querySelector("#adapterraButton").onclick = function(e){
 				document.getElementById("adapterraProject").style.display = 'block';
 			};
-          
+            
             document.querySelector("#adapterraClose").onclick = function(e){
 				document.getElementById("adapterraProject").style.display = 'none';
 			};
@@ -317,7 +325,47 @@
         </div>
     
     
-      <!-- Adapterra -->
+      <!-- Penguin Glide -->
+      <div id="penguinProject" class="projectInfo" style="display: none;">
+        <div class="projectBubble">
+        <div class="row" style="max-width: 100%;">
+          <div class="one columns">
+            <p>
+            </p>
+          </div>
+          <div class="five columns projectDescription" style="margin-top: 5%; margin-bottom: 5%;">
+            <h3>Penguin Glide, a Javascript Game</h3>
+            <h4>February 2017 - March 2017</h4>
+			<h6>Penguin Glide can be played <a href="penguinGlide.html">here.</a></h6>
+			<p>Penguin Glide makes use of the canvas element, all coded in Javascript.  I used modularization to program this game, including modules for the game itself, input, sound, etc. The project also showcases my skills in User Interface, making sure the player is aware of their goal, score, lives and actions that can take at all times.</p>
+            <p>I also created all of the artwork and animations for the game.</p>
+            <p>Credits for the sound can be found within the game's Credits screen.</p>
+			</div>
+          
+          <div class="five columns projectImages" style="margin-top: 5%;">
+            <img src="images/penguin-images.png" alt="Penguin Glide image collection">
+		  </div>
+          
+          <div class="one columns">
+            <p>
+            </p>
+          </div>
+          </div>
+          <div class="row" style="max-width: 100%;">
+            <div class="five columns">
+              <p>
+              </p>
+            </div>
+              <div class="two columns closeButton" style="margin-bottom: 3%;">
+            <p></p>
+            <a id="penguinClose">Close</a>
+          </div>
+              
+          </div>
+        </div>
+        </div>
+      
+        <!-- Adapterra -->
       <div id="adapterraProject" class="projectInfo" style="display: none;">
         <div class="projectBubble">
         <div class="row" style="max-width: 100%;">
@@ -328,7 +376,6 @@
           <div class="five columns projectDescription" style="margin-top: 5%; margin-bottom: 5%;">
             <h3>Adapterra, a Strategic Table-Top</h3>
 			<h4>April 2016 - may 2016</h4>
-            <h6>The Rules Sheet for this game can be found <a href="docs/ShortRulesSheet.pdf" target="_blank">here.</a></h6>
             <p>Adapterra is a TRPG (Tactical Role-playing game) board game in which players compete with one another in order to control areas of a remote planet. Through the use of nanobots and the ability to change to their environment, Adapterra offeres a wide variety of scenarios and play styles for many to enjoy.</p>
             
             <p>During the process of making this board game, I worked on balancing the mechanics and abilities in the game, as to not create a dominant or game breaking strategy. I also created artwork for the game and background information and lore for which the game is based.</p>
@@ -384,14 +431,28 @@
         <h3 style="text-align: center;">Audio Visualizer</h3>
         <img id="audioVizButton" class="projectButtonIMG" src="images/audioViz.png" alt="Audio Visualizer image" class="projectPic">
       </div>
+          
+          <!-- Penguin Glide -->
+      <div class="six columns projectButton" style="margin-top: 5%">
+        <h3 style="text-align: center;">Penguin Glide</h3>
+        <img id="penguinButton" class="projectButtonIMG" src="images/penguinGlide_button.png" alt="PenguinGlide image" class="projectPic">
+      </div>
       
+        
+      </div>
+
+    
+    <div class="row" style="max-width: 100%; margin-bottom: 5%;">
+        
         <!-- Adapterra -->
       <div class="six columns projectButton" style="margin-top: 5%">
         <h3 style="text-align: center;">Adapterra</h3>
         <img id="adapterraButton" class="projectButtonIMG" src="images/ADAPTERRA.png" alt="Adapterra image" class="projectPic">
       </div>
+        
       </div>
-  </div>
+      
+    </div>
   
   <!-- Contact Me Section -->
   <div id="contactSection" class="container" style="margin-top: 0%; background-color: #B8B6A3; text-align: center; border: 2px; border-radius: 25px">
