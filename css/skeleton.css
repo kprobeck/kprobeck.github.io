@@ -589,7 +589,7 @@ there.
 /* forced mobile */
 @media (max-width: 400px) {
 	img {
-	width: 75%;
+	width: 85%;
 	height: auto;
   }
 }
