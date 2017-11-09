@@ -187,13 +187,14 @@ body {
 
 #footer {
  	background-color: rgba(0,0,0,.5);
-    color: rgba(255,255, 255,.5);
+    	color: rgba(255,255, 255,.5);
 	border-radius: 0px 15px 5px 0px;
 	border: 3px;
 	padding: 3px;
 	bottom:0px;
 	position:fixed;
 	left: 0px;
+	visibility: hidden;
 }
 
 /* Navigation */
@@ -585,8 +586,13 @@ there.
 */
 
 
-/* Larger than mobile */
-@media (min-width: 400px) {}
+/* forced mobile */
+@media (max-width: 400px) {
+	img {
+	width: 75%;
+	height: auto;
+  }
+}
 
 /* Larger than phablet (also point when grid becomes active) */
 @media (max-width: 550px) {
@@ -666,4 +672,8 @@ there.
 }
 
 /* Larger than Desktop HD */
-@media (min-width: 1200px) {}
+@media (min-width: 1265px) {
+	#footer {
+	visibility: visible;
+ }
+}
