@@ -125,8 +125,8 @@ body {
   line-height: 1.6;
   font-weight: 400;
   font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #202020;
-  background-color: #202020;
+  color: #2E3840;
+  background-color: #2E3840;
 
 }
 
@@ -142,7 +142,7 @@ body {
 }
 
 .closeButton a{
-  color: #B8B6A3;
+  color: #CEEBF2;
 }
 
 .closeButton a:hover {
@@ -200,7 +200,7 @@ body {
 /* Navigation */
 #navcontainer {
 	width: 100%;
-	background-color: #B8B6A3;
+	background-color: #CEEBF2;
 	z-index: 99;
 }
 
@@ -226,7 +226,7 @@ padding: 3px 0.5em;
 margin-left: 3px;
 margin-top: 5px;
 margin-bottom: 5px;
-border: 2px solid #202020;
+border: 2px solid #2E3840;
 border-radius: 10px 10px 10px 10px;
 background: white;
 text-align: center;
@@ -234,7 +234,7 @@ text-decoration: none;
 font-weight: bold;
 display: inline-block;
 line-height:25px;
-color: #202020;
+color: #2E3840;
   
 animation-name: highlightBack;
 animation-duration: 1s;
@@ -244,11 +244,11 @@ animation-iteration-count: 1;
 ul.topnav li.icon {display: none;}
 
 #navlist li a:link { color: #382513; }
-#navlist li a:visited { color: #202020; }
+#navlist li a:visited { color: #2E3840; }
 
 #navlist li a:hover {
 color: white;
-background: #202020;
+background: #2E3840;
 border-color: white;
 
 animation-name: highlight;
@@ -257,7 +257,7 @@ animation-iteration-count: 1;
 }
 
 #navlist li a#current {
-background: #202020;
+background: #2E3840;
 color: white;
 border-color: white;
 }
@@ -270,30 +270,30 @@ animation-iteration-count: 1;
 
 @keyframes highlight {
 	0% {background: white;
-        color: #202020;
-        border-color: #202020;}
-	100% {background: #202020;
+        color: #2E3840;
+        border-color: #2E3840;}
+	100% {background: #2E3840;
           color: white;
           border-color: white;}
 }
 
 @keyframes highlightBack {
-	0% {background: #202020;
+	0% {background: #2E3840;
         color: white;
         border-color: white;}
 	100% {background: white;
-          color: #202020;
-          border-color: #202020;}
+          color: #2E3840;
+          border-color: #2E3840;}
 }
 
 /* Contact */
 input {
-  color: #202020;
+  color: #2E3840;
 }
 
 #contactTableSubmitButton {
 	background-color: white;
-	color: #202020;
+	color: #2E3840;
   
   animation-name: highlightBack;
 animation-duration: 1s;
@@ -301,7 +301,7 @@ animation-iteration-count: 1;
 }
 
 #contactTableSubmitButton:hover {
-	background-color: #202020;
+	background-color: #2E3840;
 	color: white;
   
   animation-name: highlight;
@@ -618,8 +618,8 @@ there.
     margin-left: 10%;
   }
 	
-.projectImages{
-    margin-left: 1%;
+.projectImages {
+    margin-left: 0% !important;
   }
 }
 
