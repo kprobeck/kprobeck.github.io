@@ -84,6 +84,14 @@
 				document.getElementById("adapterraProject").style.display = 'none';
 			};
           
+            document.querySelector("#drawButton").onclick = function(e){
+				document.getElementById("drawProject").style.display = 'block';
+			};
+            
+            document.querySelector("#drawClose").onclick = function(e){
+				document.getElementById("drawProject").style.display = 'none';
+			};
+          
             
 		}
 		
@@ -327,6 +335,47 @@
         </div>
         </div>
     
+      <!-- Draw Together -->
+      <div id="drawProject" class="projectInfo" style="display: none;">
+        <div class="projectBubble">
+        <div class="row" style="max-width: 100%;">
+          <div class="one columns">
+            <p>
+            </p>
+          </div>
+          <div class="five columns projectDescription" style="margin-top: 5%; margin-bottom: 5%;">
+            <h3>Draw Together, a Multiplayer Browser Game</h3>
+			<h4>September 2017 - October 2017</h4>
+		    <h6>Draw Together can be played <a href="http://kp-project1.herokuapp.com/">here.</a> (Desktop Only)</h6>
+            <p>Draw Together is a Multiplayer game similar to Pictionary, where players draw images to the canvas, having it stream to other players in hopes that the other player will guess their prompt correctly.</p>
+            
+            <p>I coded this game using Node.js, along with socket.IO to allow multiplayer communication across browsers The canvas image is drawn
+              in real-time on other players' canvas element, simulating drawing on a piece of paper.</p>
+			</div>
+          
+          <div class="five columns projectImages" style="margin-top: 5%;">
+            <img src="images/drawTogether-images.png" alt="Draw Together image collection">
+		  </div>
+          
+          <div class="one columns">
+            <p>
+            </p>
+          </div>
+          </div>
+          <div class="row" style="max-width: 100%;">
+            <div class="five columns">
+              <p>
+              </p>
+            </div>
+              <div class="two columns closeButton" style="margin-bottom: 3%;">
+            <p></p>
+            <a id="drawClose">Close</a>
+          </div>
+              
+          </div>
+        </div>
+        </div>
+    
     
       <!-- Penguin Glide -->
       <div id="penguinProject" class="projectInfo" style="display: none;">
@@ -367,6 +416,7 @@
           </div>
         </div>
         </div>
+    
       
         <!-- Adapterra -->
       <div id="adapterraProject" class="projectInfo" style="display: none;">
@@ -378,7 +428,7 @@
           </div>
           <div class="five columns projectDescription" style="margin-top: 5%; margin-bottom: 5%;">
             <h3>Adapterra, a Strategic Table-Top</h3>
-			<h4>April 2016 - may 2016</h4>
+			<h4>April 2016 - May 2016</h4>
 		  <h6>The Rules for Adapterra can be found <a href="docs/ShortRulesSheet.pdf" target="_blank">here.</a></li></h6>
             <p>Adapterra is a TRPG (Tactical Role-playing game) board game in which players compete with one another in order to control areas of a remote planet. Through the use of nanobots and the ability to change to their environment, Adapterra offeres a wide variety of scenarios and play styles for many to enjoy.</p>
             
@@ -388,7 +438,7 @@
 			</div>
           
           <div class="five columns projectImages" style="margin-top: 5%;">
-            <img src="images/adapterra-images.png" alt="Audio Visualizer image collection">
+            <img src="images/adapterra-images.png" alt="Adapterra image collection">
 		  </div>
           
           <div class="one columns">
@@ -448,6 +498,13 @@
     
     <div class="row" style="max-width: 100%; margin-bottom: 5%;">
         
+        <!-- Draw Together -->
+      <div class="six columns projectButton" style="margin-top: 5%">
+        <h3 style="text-align: center;">Draw Together</h3>
+        <img id="drawButton" class="projectButtonIMG" src="images/drawTogetherButton.png" alt="Draw Together image" class="projectPic">
+      </div>
+      
+      
         <!-- Adapterra -->
       <div class="six columns projectButton" style="margin-top: 5%">
         <h3 style="text-align: center;">Adapterra</h3>
@@ -455,8 +512,6 @@
       </div>
         
       </div>
-      
-    </div>
   
   <!-- Contact Me Section -->
   <div id="contactSection" class="container" style="margin-top: 0%; background-color: #CEEBF2; text-align: center; border: 2px; border-radius: 25px">
